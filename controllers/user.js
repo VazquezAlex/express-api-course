@@ -1,3 +1,5 @@
+const User = require('../models/user');
+
 const uuid = require('uuid').v4;
 
 const MOCK_USERS = [
@@ -41,24 +43,24 @@ const getUserById = (req, res) => {
     });
 }
 
-const saveUser = (req, res) => {
+const saveUser = async (req, res) => {
     const body = req.body;
 
-    // TODO: Send user to DB.
-    const newUser = {
-        id: uuid(),
-        name: body.name,
-        country: body.country,
+    try {
+
+        // Register on DB.
+        const newUser = await User.create(body);
+
+        res.status(201).json({
+            status: 'sucess',
+            data: {
+                user: newUser
+            }
+        })
+    } catch(e) {
+        console.log(e);
     }
 
-    MOCK_USERS.push(newUser)
-
-    res.status(201).json({
-        status: 'sucess',
-        data: {
-            user: newUser
-        }
-    })
 }
 
 const deleteUser = (req, res) => {
